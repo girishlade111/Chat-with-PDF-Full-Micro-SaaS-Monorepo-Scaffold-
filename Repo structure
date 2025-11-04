@@ -1,0 +1,54 @@
+chat-with-pdf/
+├─ backend/
+│ ├─ app/
+│ │ ├─ __init__.py
+│ │ ├─ main.py
+│ │ ├─ config.py
+│ │ ├─ db.py
+│ │ ├─ models.py
+│ │ ├─ schemas.py
+│ │ ├─ auth.py
+│ │ ├─ services/
+│ │ │ ├─ pdf_parser.py
+│ │ │ ├─ ocr.py
+│ │ │ ├─ embeddings.py
+│ │ │ ├─ retriever.py
+│ │ │ ├─ rag.py
+│ │ ├─ routers/
+│ │ │ ├─ auth_routes.py
+│ │ │ ├─ upload_routes.py
+│ │ │ ├─ ask_routes.py
+│ │ │ ├─ document_routes.py
+│ ├─ celery_app.py
+│ ├─ tasks.py
+│ ├─ requirements.txt
+│ ├─ Dockerfile
+│
+├─ db/
+│ ├─ init.sql
+│
+├─ frontend/
+│ ├─ app/
+│ │ ├─ layout.tsx
+│ │ ├─ page.tsx
+│ │ ├─ chat/[docId]/page.tsx
+│ │ ├─ api.ts
+│ ├─ components/
+│ │ ├─ UploadDropzone.tsx
+│ │ ├─ ChatUI.tsx
+│ │ ├─ PdfPane.tsx
+│ │ ├─ CitationChip.tsx
+│ ├─ lib/
+│ │ ├─ sse.ts
+│ ├─ public/
+│ ├─ styles/
+│ │ ├─ globals.css
+│ ├─ package.json
+│ ├─ postcss.config.js
+│ ├─ tailwind.config.ts
+│ ├─ tsconfig.json
+│ ├─ Dockerfile
+│
+├─ docker-compose.yml
+├─ .env.example
+├─ README.md
