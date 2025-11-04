@@ -1,0 +1,58 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+
+CREATE TABLE users (
+id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+email TEXT UNIQUE NOT NULL,
+name TEXT,
+password_hash TEXT,
+created_at TIMESTAMPTZ DEFAULT now()
+);
+
+
+CREATE TABLE documents (
+id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+filename TEXT NOT NULL,
+file_url TEXT NOT NULL,
+page_count INT,
+status TEXT DEFAULT 'processing',
+created_at TIMESTAMPTZ DEFAULT now()
+);
+
+
+-- 3072 dims for text-embedding-3-large
+CREATE TABLE embeddings (
+id BIGSERIAL PRIMARY KEY,
+document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+page_start INT,
+page_end INT,
+para_index INT,
+chunk_text TEXT,
+chunk_tokens INT,
+vec VECTOR(3072)
+);
+CREATE INDEX embeddings_vec_idx ON embeddings USING ivfflat (vec vector_cosine_ops) WITH (lists = 200);
+CREATE INDEX embeddings_doc_idx ON embeddings (document_id);
+
+
+CREATE TABLE messages (
+id BIGSERIAL PRIMARY KEY,
+document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+role TEXT CHECK (role IN ('user','ai')),
+content TEXT,
+citations JSONB,
+latency_ms INT,
+created_at TIMESTAMPTZ DEFAULT now()
+);
+
+
+CREATE TABLE feedback (
+id BIGSERIAL PRIMARY KEY,
+message_id BIGINT REFERENCES messages(id) ON DELETE CASCADE,
+rating INT CHECK (rating IN (-1,1)),
+note TEXT,
+created_at TIMESTAMPTZ DEFAULT now()
+);
